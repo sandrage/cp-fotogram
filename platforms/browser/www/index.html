@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="msapplication-tap-highlight" content="no" />
+    <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="css/index.css"/>
+    <title>fotogram</title>
+</head>
+
+<body>
+    <div id="loginpage">
+      <div class="d-flex justify-content-center align-items-center" style="min-height: 68vh;">
+        <form id="login-form">
+          <div class="col row d-flex justify-content-center mb-4" id="fotogram-logo">
+            <h1>fotogram</h1>
+          </div>
+          <div class="row">
+            <div class="col form-group">
+              <input type="text" placeholder="Username" name="username" class="form-control"/>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col form-group">
+              <input type="password" placeholder="Password" name="password" class="form-control"/>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col form-group d-flex justify-content-center">
+              <button type="submit" class="btn btn-primary mb-2">Login</button>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col d-flex justify-content-center">
+              <p>Not registered yet? Create a new account  <a href="https://ewserver.di.unimi.it/mobicomp/fotogram/userreg.html"> here</a></p></div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+    <div id="app-content" class="hidden">
+      <nav class="navbar fixed-top navbar-default" id="header">
+          <p class="navbar-brand">fotogram</p>
+          <div class="dropdown float-right">
+            <button class="btn" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <i class="material-icons">menu</i>
+            </button>
+            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
+              <a class="dropdown-item" id="logout" href="#">Logout</a>
+            </div>
+          </div>
+      </nav>
+      <div class="container justify-content-center align-items-center">
+          <div id="dashboardpage" class="hidden container">
+            <div class="col" id="dash-content">
+            </div>
+          </div>
+          <div id="postcreationpage" class="row hidden">
+            <div class="d-flex justify-content-center align-items-center" id="postcreation-content" style="min-height: 68vh;">
+              <form class="col" id="addpost">
+                    <div class="row">
+                      <div class="col form-group">
+                        <input name="postmsg" type="text" class="form-control" placeholder="Post comment"/>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col form-group">
+                      <input name="postimg" id="postimg" type="file" accept="image/*"/>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col form-group" id="imgpreview">
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col form-group text-center">
+                        <button type="submit" class="btn btn-primary mb-2">Create</button>
+                      </div>
+                    </div>
+              </form>
+            </div>
+          </div>
+          <div id="profilepage" class="row hidden">
+            <div class="col" id="profilepage-content">
+              <div class="row">
+                <div class="col-sm" id="userprofilephoto"></div>
+                <div class="col-sm" id="profile_infofollowunfollow">
+                  <div class="row">
+                    <div class="col text-center">
+                      <h2 id="profile_user"></h2>
+                    </div>
+                  </div>
+                  <div class="row" id="profile_followunfollow">
+                    <div class="col-sm text-center" id="profile_follow">
+                      <button type="button" class="btn btn-primary" id="go_follow">Follow</button>
+                    </div>
+                    <div class="col-sm text-center" id="profile_unfollow">
+                      <button type="button" class="btn btn-primary" id="go_unfollow">Unfollow</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row" id="profile_posts">
+                <h4 class="mt-30">Posts</h4>
+                <div id="profile_posts_content"></div>
+              </div>
+            </div>
+          </div>
+          <div id="searchpage" class="row hidden">
+            <div class="col" id="searchpage-content">
+              <h2>Search friends</h2>
+              <input type="text" name="search_username" placeholder="Search user..." id="searchfield" class="form-control"/>
+              <ul id="list-users" class="list-group mt-2 limit-list"></ul>
+            </div>
+          </div>
+          <div id="changeprofilephotopage" class="row hidden">
+            <div class="col" id="changeprofilephoto-content">
+            </div>
+          </div>
+        </div>
+      <nav class="navbar fixed-bottom navbar-default" id="menubar">
+          <i class="material-icons md-light" id="menu-home">home</i>
+          <i class="material-icons md-light" id="menu-profile">face</i>
+          <i class="material-icons md-light" id="menu-addpost">add_photo_alternate</i>
+          <i class="material-icons md-light" id="menu-search">search</i>
+      </nav>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="cordova.js"></script>
+    <script type="text/javascript" src="js/consts.js"></script>
+    <script type="text/javascript" src="js/index.js"></script>
+</body>
+
+</html>
