@@ -6,6 +6,7 @@
     <meta name="format-detection" content="telephone=no" />
     <meta name="msapplication-tap-highlight" content="no" />
     <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width" />
+    <link href="https://fonts.googleapis.com/css?family=Roboto:900i|Montserrat&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="css/index.css"/>
@@ -13,11 +14,13 @@
 </head>
 
 <body>
-    <div id="loginpage">
+    <div id="loginpage" class="hidden">
       <div class="d-flex justify-content-center align-items-center" style="min-height: 68vh;">
         <form id="login-form">
-          <div class="col row d-flex justify-content-center mb-4" id="fotogram-logo">
-            <h1>fotogram</h1>
+          <div class="row form-group mb-4" id="fotogram-logo">
+            <div class="col text-center">
+              <h1>fotogram</h1>
+            </div>
           </div>
           <div class="row">
             <div class="col form-group">
@@ -56,7 +59,7 @@
       </nav>
       <div class="container justify-content-center align-items-center">
           <div id="dashboardpage" class="hidden container">
-            <div class="col" id="dash-content">
+            <div class="col" id="dash-content" align="center">
             </div>
           </div>
           <div id="postcreationpage" class="row hidden">
@@ -69,7 +72,7 @@
                     </div>
                     <div class="row">
                       <div class="col form-group">
-                      <input name="postimg" id="postimg" type="file" accept="image/*"/>
+                      <button name="postimg" id="postimg" class="btn btn-primary mb-2">Search photo</button>
                       </div>
                     </div>
                     <div class="row">
@@ -87,26 +90,28 @@
           <div id="profilepage" class="row hidden">
             <div class="col" id="profilepage-content">
               <div class="row">
-                <div class="col-sm" id="userprofilephoto"></div>
-                <div class="col-sm" id="profile_infofollowunfollow">
+                <div class="col-20 mr-20" id="userprofilephoto"></div>
+                <div class="col-80" id="profile_infofollowunfollow">
                   <div class="row">
                     <div class="col text-center">
                       <h2 id="profile_user"></h2>
                     </div>
                   </div>
                   <div class="row" id="profile_followunfollow">
-                    <div class="col-sm text-center" id="profile_follow">
+                    <div class="col-50 text-center mr-2" id="profile_follow">
                       <button type="button" class="btn btn-primary" id="go_follow">Follow</button>
                     </div>
-                    <div class="col-sm text-center" id="profile_unfollow">
+                    <div class="col-50 text-center" id="profile_unfollow">
                       <button type="button" class="btn btn-primary" id="go_unfollow">Unfollow</button>
                     </div>
                   </div>
                 </div>
               </div>
-              <div class="row" id="profile_posts">
+              <div class="row text-center" id="profile_posts_title">
                 <h4 class="mt-30">Posts</h4>
-                <div id="profile_posts_content"></div>
+              </div>
+              <div class="row" id="profile_posts">
+                <div class="col" id="profile_posts_content" align="center"></div>
               </div>
             </div>
           </div>

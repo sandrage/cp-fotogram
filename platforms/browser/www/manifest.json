@@ -4,7 +4,7 @@
   "name": "helloworld",
   "short_name": "helloworld",
   "version": "com.phonegap.helloworld",
-  "description": "Hello World sample application that responds to the deviceready event.",
+  "description": "fotogram",
   "author": "PhoneGap Team",
   "icons": [],
   "start_url": "index.html"

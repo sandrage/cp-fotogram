@@ -1,8 +1,21 @@
 let session_id=null;
 let username_logged=null;
 let followed_friends={};
+let response_mapping = {
+  'CANNOT FOLLOW YOURSELF':"You can't follow yourself",
+  'ALREADY FOLLOWING USER':"You are already following that user",
+  'USERNAME NOT FOUND':"The username doesn't exists",
+  'YOU ARE NOT FOLLOWING THAT USER':"You are already not following that user"
+}
 $(document).ready(function(){
   followed();
+  session_id = localStorage.getItem("session_id");
+  username_logged = localStorage.getItem("username");
+  if(session_id!=null && username_logged!=null){
+    $('#app-content').show(togglehome);
+  } else{
+    $('#loginpage').show();
+  }
   $('#login-form').submit(login);
   $('#menu-home').click(togglehome);
   $('#menu-profile').click(function(){toggleprofile(username_logged)});
@@ -10,6 +23,19 @@ $(document).ready(function(){
   $('#menu-search').click(togglesearch);
   $('#logout').click(logout);
 });
+function errormanager(error){
+  if(error.status==401){
+    localStorage.removeItem("session_id");
+    localStorage.removeItem("username");
+    alert('Invalid session id');
+  } else{
+    if(response_mapping[error.responseText]){
+      alert(response_mapping[error.responseText])
+    } else{
+      alert('Unexpected error: '+error.responseText);
+    }
+  }
+}
 function togglelogin(e){
   $('#app-content').hide();
   $('#loginpage').show();
@@ -54,12 +80,14 @@ function login(e){
     contentType: false,
     success: (response)=>{
       session_id = response;
+      localStorage.setItem("session_id",session_id);
       username_logged = username;
+      localStorage.setItem("username",username_logged);
       $('#loginpage').hide();
       $('#app-content').show(togglehome);
     },
     error: (error)=>{
-      $('#fotogram-logo').after('<div class="alert alert-danger" role="alert">Wrong username or password!</div>');
+      errormanager(error);
     }
   });
 }
@@ -75,71 +103,81 @@ function dashboard(e){
     processData: false,
     contentType: false,
     success: (response) => {
-      console.log(response);
       let posts = response.posts;
       posts.forEach(function(elem){
-        let newcard = '<div class="card">';
-        newcard+='<div class="card-header">';
-        newcard+='<img style="margin-right:20px" width="100" height="100" class="rounded-circle" src="data:image/png;base64,'+followed_friends[elem.user]+'"/>'
-        newcard+=elem.user;
-        newcard+='</div>';
-        newcard+='<div class="card-body">';
-        newcard+='<p class="card-text">'+elem.msg+'</div>';
-        newcard+='<img src="data:image/png;base64,'+elem.img+'"/>';
-        newcard+='</div>';
-        newcard+='<div class="card-footer text-muted mb-4">';
-        newcard+=elem.timestamp;
-        newcard+='</div>';
-        newcard+='</div>';
+        let newcard = '<div class="card mx-auto" style="max-width:500px;">'
+              +'<div class="card-body">'
+                +'<div class="card-header row">'
+                  +'<div class="col-sm-4">'
+                    +'<img width="100" height="100" class="rounded-circle" src="data:image/png;base64,'+followed_friends[elem.user]+'"/>'
+                  +'</div>'
+                  +'<div class="col-sm-8 align-top text-left mb-10">'
+                    +'<div class="row">'
+                      +'<div class="col usernamestyle">'+elem.user+"</div>"
+                    +'</div>'
+                    +'<div class="row">'
+                    +"<span><i class='material-icons'>arrow_forward_ios</i></span> <p class='msgstyle'>"+elem.msg+"</p>"
+                    +'</div>'
+                  +'</div>'
+                +'</div>'
+              +'</hr>'
+              +'<div class="list-group list-group-flush row">'
+                +'<div class="list-group-item col">'
+                  +'<img class="img-max-width" src="data:image/png;base64,'+elem.img+'"/>'
+                +'</div>'
+              +'</div>'
+            +'</div>'
+          +'</div>';
         $('#dash-content').append(newcard);
       });
     },
     error: (error) => {
-      $('#header').after('<div class="alert alert-danger" role="alert">Error in content loading</div>');
+      //$('#header').after('<div class="alert alert-danger" role="alert">Error in content loading</div>');
+      errormanager(error);
     }
   });
 }
+function onFail(message){
+  alert('Unexpected error occured while in the image upload: '+message);
+}
 function postcreation(e){
   $('#addpost').submit(addpostsubmit);
-  $('#postimg').on('change',function(){
-    var postimg = document.getElementById('postimg').files[0];
-    var img = document.createElement("img");
-    var reader = new FileReader();
-    reader.onload = function(e){
-          var canvas = document.createElement("canvas");
-          img.onload = function(){
-            var MAX_WIDTH = 400;
-            var MAX_HEIGHT = 300;
-            var width = img.width;
-            var height = img.height;
-            if (width > height) {
-              if (width > MAX_WIDTH) {
-                height *= MAX_WIDTH / width;
-                width = MAX_WIDTH;
-              }
-            } else {
-              if (height > MAX_HEIGHT) {
-                width *= MAX_HEIGHT / height;
-                height = MAX_HEIGHT;
-              }
-            }
-            canvas.width = width;
-            canvas.height = height;
-            var ctx = canvas.getContext('2d');
-            ctx.drawImage(img, 0, 0, width, height);
-            var dataurl = canvas.toDataURL(postimg.type);
-            var imgresized = document.createElement("img");
-            imgresized.id = 'imgresized';
-            imgresized.onload = function(){
-              $('#imgpreview').append(imgresized);
-            };
-            imgresized.src = dataurl;
-          };
-          img.src = e.target.result;
-      };
-      // Load files into file reader
-      reader.readAsDataURL(postimg);
-  })
+  $('#postimg').click(function(){
+    navigator.camera.getPicture(resizePhoto, onFail, {quality: 25, destinationType: Camera.DestinationType.DATA_URL});
+  });
+}
+function resizePhoto(imageDate){
+  var img = document.createElement("img");
+  var canvas = document.createElement("canvas");
+  img.onload = function(){
+    var MAX_WIDTH = 400;
+    var MAX_HEIGHT = 300;
+    var width = img.width;
+    var height = img.height;
+    if (width > height) {
+      if (width > MAX_WIDTH) {
+        height *= MAX_WIDTH / width;
+        width = MAX_WIDTH;
+      }
+    } else {
+      if (height > MAX_HEIGHT) {
+        width *= MAX_HEIGHT / height;
+        height = MAX_HEIGHT;
+      }
+    }
+    canvas.width = width;
+    canvas.height = height;
+    var ctx = canvas.getContext('2d');
+    ctx.drawImage(img, 0, 0, width, height);
+    var dataurl = canvas.toDataURL(postimg.type);
+    var imgresized = document.createElement("img");
+    imgresized.id = 'imgresized';
+    imgresized.onload = function(){
+      $('#imgpreview').append(imgresized);
+    };
+    imgresized.src = dataurl;
+  };
+  img.src = "data:image/jpeg;base64," + imageData;
 }
 function addpostsubmit(e){
   e.preventDefault();
@@ -160,7 +198,8 @@ function addpostsubmit(e){
       togglehome();
     },
     error: (error) =>{
-      $('#addpost').prepend('<div class="alert alert-danger" role="alert">Something went wrong :(</div>');
+      //$('#addpost').prepend('<div class="alert alert-danger" role="alert">Something went wrong while uploading the post :(</div>');
+      errormanager(error);
     }
   });
 }
@@ -188,7 +227,7 @@ function getlistusers(e){
       });
     },
     error: (error) => {
-
+      errormanager(error);
     }
   });
 }
@@ -213,19 +252,19 @@ function profile(e){
         $('#userprofilephoto').empty();
         $('#userprofilephoto').append(profilephoto);
       };
-      profilephoto.width = 200;
-      profilephoto.height = 200;
+      profilephoto.width = 100;
+      profilephoto.height = 100;
       profilephoto.src = 'data:image/png;base64,'+response.img;
       $('#profile_user').html(response.username);
       if(response.posts!=null){
         $('#profile_posts_content').empty();
         response.posts.forEach(function(elem){
-          let newcard = '<div class="card">';
+          let newcard = '<div class="card" style="max-width: 400px;">';
           newcard+='<div class="card-body">';
           newcard+='<p class="card-text">'+elem.msg+'</div>';
-          newcard+='<img src="data:image/png;base64,'+elem.img+'"/>';
+          newcard+='<img class="img-max-width" src="data:image/png;base64,'+elem.img+'"/>';
           newcard+='</div>';
-          newcard+='<div class="card-footer text-muted mb-4">';
+          newcard+='<div class="card-footer text-muted mb-4" style="max-width: 400px;">';
           newcard+=elem.timestamp;
           newcard+='</div>';
           newcard+='</div>';
@@ -234,7 +273,7 @@ function profile(e){
       }
     },
     error: (error) => {
-
+      errormanager(error);
     }
   });
 }
@@ -249,12 +288,10 @@ function actionfollow(e){
     processData: false,
     contentType: false,
     success: (response) => {
-      console.log(response);
+      alert('Now you are following this user!');
     },
     error: (error) =>{
-      if(error.responseText){
-        alert(error.responseText);
-      }
+      errormanager(error);
     }
   });
 }
@@ -269,13 +306,10 @@ function actionunfollow(e){
     processData: false,
     contentType: false,
     success: (response) => {
-      console.log(response);
+      alert('You are not following that user anymore');
     },
     error: (error) =>{
-      console.log(error);
-      if(error.responseText){
-        alert(error.responseText);
-      }
+      errormanager(error);
     }
   });
 }
@@ -289,12 +323,13 @@ function logout(){
     processData: false,
     contentType: false,
     success: (response) => {
+      localStorage.removeItem("session_id");
+      localStorage.removeItem("username");
+      alert('Logout completed with success');
       togglelogin();
     },
     error: (error) => {
-      if(error.responseText){
-        alert(error.responseText);
-      }
+      errormanager(error);
     }
   });
 }
@@ -317,7 +352,7 @@ function followed(){
       dashboard();
     },
     error: (error) => {
-
+      errormanager(error);
     }
   });
 }

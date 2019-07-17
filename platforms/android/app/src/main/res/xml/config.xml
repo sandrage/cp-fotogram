@@ -35,9 +35,13 @@
     <feature name="Vibration">
         <param name="android-package" value="org.apache.cordova.vibration.Vibration" />
     </feature>
+    <feature name="Whitelist">
+        <param name="android-package" value="org.apache.cordova.whitelist.WhitelistPlugin" />
+        <param name="onload" value="true" />
+    </feature>
     <name>helloworld</name>
     <description>
-        Hello World sample application that responds to the deviceready event.
+        fotogram
     </description>
     <author email="support@phonegap.com" href="http://phonegap.com">
         PhoneGap Team
