@@ -46,10 +46,10 @@
       </div>
     </div>
     <div id="app-content" class="hidden">
-      <nav class="navbar fixed-top navbar-default" id="header">
+      <nav class="navbar fixed-top navbar-default" id="header" style="padding:0px 0px 0px 10px;">
           <p class="navbar-brand">fotogram</p>
           <div class="dropdown float-right">
-            <button class="btn" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <button class="btn" type="button" id="dropdownMenuButton" data-toggle="dropdown" style="padding:0px 0px 0px 0px" aria-haspopup="true" aria-expanded="false">
               <i class="material-icons">menu</i>
             </button>
             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
@@ -59,7 +59,11 @@
       </nav>
       <div class="container justify-content-center align-items-center">
           <div id="dashboardpage" class="hidden container">
-            <div class="col" id="dash-content" align="center">
+            <div class="container-fuid" align="center">
+              <div class="row">
+                <div class="col nopadding" id="dash-content" align="center">
+                </div>
+              </div>
             </div>
           </div>
           <div id="postcreationpage" class="row hidden">
@@ -87,28 +91,28 @@
               </form>
             </div>
           </div>
-          <div id="profilepage" class="row hidden">
-            <div class="col" id="profilepage-content">
+          <div id="profilepage" class="hidden">
+            <div class="container-fuid" id="profilepage-content">
               <div class="row">
-                <div class="col-20 mr-20" id="userprofilephoto"></div>
-                <div class="col-80" id="profile_infofollowunfollow">
+                <div class="col-4 mr-20" id="userprofilephoto"></div>
+                <div class="col-8" id="profile_infofollowunfollow">
                   <div class="row">
                     <div class="col text-center">
-                      <h2 id="profile_user"></h2>
+                      <h2 class="postsstyle" id="profile_user"></h2>
                     </div>
                   </div>
-                  <div class="row" id="profile_followunfollow">
-                    <div class="col-50 text-center mr-2" id="profile_follow">
+                  <div class="row mt-2 mb-2" id="profile_followunfollow">
+                    <div class="col-6 text-right" id="profile_follow">
                       <button type="button" class="btn btn-primary" id="go_follow">Follow</button>
                     </div>
-                    <div class="col-50 text-center" id="profile_unfollow">
+                    <div class="col-6 text-left" id="profile_unfollow">
                       <button type="button" class="btn btn-primary" id="go_unfollow">Unfollow</button>
                     </div>
                   </div>
                 </div>
               </div>
               <div class="row text-center" id="profile_posts_title">
-                <h4 class="mt-30">Posts</h4>
+                <h4 class="postsstyle">POSTS</h4>
               </div>
               <div class="row" id="profile_posts">
                 <div class="col" id="profile_posts_content" align="center"></div>
@@ -122,8 +126,24 @@
               <ul id="list-users" class="list-group mt-2 limit-list"></ul>
             </div>
           </div>
-          <div id="changeprofilephotopage" class="row hidden">
-            <div class="col" id="changeprofilephoto-content">
+          <div id="changeprofilephotopage" class="hidden container">
+            <div class="row" id="changeprofilephoto-content" style="min-height: 68vh;">
+                <form class="col text-center" id="changephoto">
+                      <div class="row">
+                        <div class="col form-group">
+                        <button name="postimg" id="profileimg" class="btn btn-primary mb-2">Search photo</button>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col form-group" id="profileimgpreview">
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col form-group text-center">
+                          <button type="submit" class="btn btn-primary mb-2">Update</button>
+                        </div>
+                      </div>
+                </form>
             </div>
           </div>
         </div>

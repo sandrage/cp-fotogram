@@ -1,5 +1,5 @@
 #Internal package file, do not edit.
-#Wed Jul 17 19:50:06 CEST 2019
+#Fri Jul 19 23:06:13 CEST 2019
 124.path=www/res/icon/windows/Square44x44Logo.scale-240.png
 60.set=ASSET
 52.set=ASSET

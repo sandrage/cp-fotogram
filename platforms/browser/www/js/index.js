@@ -8,7 +8,6 @@ let response_mapping = {
   'YOU ARE NOT FOLLOWING THAT USER':"You are already not following that user"
 }
 $(document).ready(function(){
-  followed();
   session_id = localStorage.getItem("session_id");
   username_logged = localStorage.getItem("username");
   if(session_id!=null && username_logged!=null){
@@ -23,16 +22,19 @@ $(document).ready(function(){
   $('#menu-search').click(togglesearch);
   $('#logout').click(logout);
 });
-function errormanager(error){
+function formatdate(date){
+  return date.getDate()+"-"+date.getMonth()+"-"+date.getYear()+" "+date.getHours()+":"+date.getMinutes()+":"+date.getSeconds();
+}
+function errormanager(error, msg){
   if(error.status==401){
     localStorage.removeItem("session_id");
     localStorage.removeItem("username");
-    alert('Invalid session id');
+    alert('Invalid session id'+"("+msg+")");
   } else{
     if(response_mapping[error.responseText]){
-      alert(response_mapping[error.responseText])
+      alert(response_mapping[error.responseText]+"("+msg+")");
     } else{
-      alert('Unexpected error: '+error.responseText);
+      alert('Unexpected error: '+error.responseText+"("+msg+")");
     }
   }
 }
@@ -45,24 +47,35 @@ function togglehome(e){
   $('#postcreationpage').hide();
   $('#profilepage').hide();
   $('#searchpage').hide();
+  $('#changeprofilephotopage').hide();
 }
 function toggleprofile(e){
   $('#dashboardpage').hide();
   $('#postcreationpage').hide();
   $('#profilepage').show(function(){profile(e)});
   $('#searchpage').hide();
+  $('#changeprofilephotopage').hide();
 }
 function toggleaddpost(e){
   $('#dashboardpage').hide();
   $('#postcreationpage').show(postcreation);
   $('#profilepage').hide();
   $('#searchpage').hide();
+  $('#changeprofilephotopage').hide();
 }
 function togglesearch(e){
   $('#dashboardpage').hide();
   $('#postcreationpage').hide();
   $('#profilepage').hide();
   $('#searchpage').show(searchusers);
+  $('#changeprofilephotopage').hide();
+}
+function toggleprofilephoto(){
+  $('#changeprofilephotopage').show(updatephoto);
+  $('#dashboardpage').hide();
+  $('#postcreationpage').hide();
+  $('#profilepage').hide();
+  $('#searchpage').hide();
 }
 function login(e){
   e.preventDefault();
@@ -87,7 +100,7 @@ function login(e){
       $('#app-content').show(togglehome);
     },
     error: (error)=>{
-      errormanager(error);
+      errormanager(error,"login");
     }
   });
 }
@@ -105,25 +118,31 @@ function dashboard(e){
     success: (response) => {
       let posts = response.posts;
       posts.forEach(function(elem){
-        let newcard = '<div class="card mx-auto" style="max-width:500px;">'
+        let dateFormatted = formatdate(new Date(elem.timestamp));
+        let newcard = '<div class="shadow card mx-auto cardstyle" onclick="toggleprofile(\''+elem.user+'\')">'
               +'<div class="card-body">'
-                +'<div class="card-header row">'
-                  +'<div class="col-sm-4">'
+                +'<div class="card-header row nopadding nomargin">'
+                  +'<div class="col-xs-4 text-left">'
                     +'<img width="100" height="100" class="rounded-circle" src="data:image/png;base64,'+followed_friends[elem.user]+'"/>'
                   +'</div>'
-                  +'<div class="col-sm-8 align-top text-left mb-10">'
+                  +'<div class="col-xs-8 align-top text-left mb-10">'
                     +'<div class="row">'
                       +'<div class="col usernamestyle">'+elem.user+"</div>"
                     +'</div>'
-                    +'<div class="row">'
-                    +"<span><i class='material-icons'>arrow_forward_ios</i></span> <p class='msgstyle'>"+elem.msg+"</p>"
+                    +'<div class="row nomargin">'
+                    +"<span><i class='material-icons md-18'>arrow_forward_ios</i></span> <p class='msgstyle'>"+elem.msg+"</p>"
                     +'</div>'
                   +'</div>'
                 +'</div>'
               +'</hr>'
               +'<div class="list-group list-group-flush row">'
-                +'<div class="list-group-item col">'
+                +'<div class="list-group-item col nopadding">'
                   +'<img class="img-max-width" src="data:image/png;base64,'+elem.img+'"/>'
+                +'</div>'
+              +'</div>'
+              +'<div class="list-group list-group-flush row">'
+                +'<div class="list-group-item col">'
+                  +'<p class="timestampstyle">'+dateFormatted+'</p>'
                 +'</div>'
               +'</div>'
             +'</div>'
@@ -132,8 +151,7 @@ function dashboard(e){
       });
     },
     error: (error) => {
-      //$('#header').after('<div class="alert alert-danger" role="alert">Error in content loading</div>');
-      errormanager(error);
+      errormanager(error,"dashboard");
     }
   });
 }
@@ -141,12 +159,13 @@ function onFail(message){
   alert('Unexpected error occured while in the image upload: '+message);
 }
 function postcreation(e){
+  $('#imgpreview').empty();
   $('#addpost').submit(addpostsubmit);
   $('#postimg').click(function(){
-    navigator.camera.getPicture(resizePhoto, onFail, {quality: 25, destinationType: Camera.DestinationType.DATA_URL});
+    navigator.camera.getPicture(resizePhoto, onFail, {quality: 10, encodingType : Camera.EncodingType.JPEG, destinationType: Camera.DestinationType.DATA_URL, sourceType: Camera.PictureSourceType.PHOTOLIBRARY, correctOrientation : true});
   });
 }
-function resizePhoto(imageDate){
+function resizePhoto(imageData){
   var img = document.createElement("img");
   var canvas = document.createElement("canvas");
   img.onload = function(){
@@ -169,11 +188,45 @@ function resizePhoto(imageDate){
     canvas.height = height;
     var ctx = canvas.getContext('2d');
     ctx.drawImage(img, 0, 0, width, height);
-    var dataurl = canvas.toDataURL(postimg.type);
+    var dataurl = canvas.toDataURL(postimg.type,0.5);
     var imgresized = document.createElement("img");
     imgresized.id = 'imgresized';
     imgresized.onload = function(){
       $('#imgpreview').append(imgresized);
+    };
+    imgresized.src = dataurl;
+  };
+  img.src = "data:image/jpeg;base64," + imageData;
+  console.log("imageData: ",imageData);
+}
+function resizeProfilePhoto(imageData){
+  var img = document.createElement("img");
+  var canvas = document.createElement("canvas");
+  img.onload = function(){
+    var MAX_WIDTH = 100;
+    var MAX_HEIGHT = 200;
+    var width = img.width;
+    var height = img.height;
+    if (width > height) {
+      if (width > MAX_WIDTH) {
+        height *= MAX_WIDTH / width;
+        width = MAX_WIDTH;
+      }
+    } else {
+      if (height > MAX_HEIGHT) {
+        width *= MAX_HEIGHT / height;
+        height = MAX_HEIGHT;
+      }
+    }
+    canvas.width = width;
+    canvas.height = height;
+    var ctx = canvas.getContext('2d');
+    ctx.drawImage(img, 0, 0, width, height);
+    var dataurl = canvas.toDataURL(postimg.type);
+    var imgresized = document.createElement("img");
+    imgresized.id = 'imgresized';
+    imgresized.onload = function(){
+      $('#profileimgpreview').append(imgresized);
     };
     imgresized.src = dataurl;
   };
@@ -183,7 +236,9 @@ function addpostsubmit(e){
   e.preventDefault();
   e.stopPropagation();
   const postmsg = $('#addpost input[name="postmsg"]').val();
+  console.log("postmsg: ",postmsg);
   const postimg = $('#imgresized')[0].src.replace(/^data:image.+;base64,/, '');
+  console.log("img to be sent: ",postimg);
   var data = new FormData();
   data.append("session_id",session_id);
   data.append("img",postimg);
@@ -199,7 +254,7 @@ function addpostsubmit(e){
     },
     error: (error) =>{
       //$('#addpost').prepend('<div class="alert alert-danger" role="alert">Something went wrong while uploading the post :(</div>');
-      errormanager(error);
+      errormanager(error,"addpost");
     }
   });
 }
@@ -231,8 +286,39 @@ function getlistusers(e){
     }
   });
 }
+function updatephoto(){
+  $('#profileimgpreview').empty();
+  $('#changephoto').submit(changephotosubmit);
+  $('#profileimg').click(function(){
+    navigator.camera.getPicture(resizeProfilePhoto, onFail, {quality: 25, destinationType: Camera.DestinationType.DATA_URL, sourceType: Camera.PictureSourceType.PHOTOLIBRARY});
+  })
+}
+function changephotosubmit(){
+  e.preventDefault();
+  e.stopPropagation();
+  const profileimage = $('#profileimgpreview')[0].src.replace(/^data:image.+;base64,/, '');
+  var data = new FormData();
+  data.append("session_id",session_id);
+  data.append("picture",profileimage);
+  $.ajax({
+    url: base_url+'picture_update',
+    method: 'post',
+    data: data,
+    processData: false,
+    contentType: false,
+    success: (response) => {
+      toggleprofile(localStorage.getItem('username'));
+    },
+    error: (error) =>{
+      errormanager(error,"picture_update");
+    }
+  });
+}
 function profile(e){
-  console.log(e);
+  $('#profile_posts_content').empty();
+  $('#userprofilephoto').empty();
+  $('#go_follow').unbind('click');
+  $('#go_unfollow').unbind('click');
   $('#go_follow').click(function(){actionfollow(e)});
   $('#go_unfollow').click(function(){actionunfollow(e)});
   var data = new FormData();
@@ -248,32 +334,47 @@ function profile(e){
     success: (response) => {
       var profilephoto = document.createElement('img');
       profilephoto.classList.add('rounded-circle');
-      profilephoto.onload = function(){
-        $('#userprofilephoto').empty();
-        $('#userprofilephoto').append(profilephoto);
-      };
       profilephoto.width = 100;
       profilephoto.height = 100;
+      profilephoto.id = 'photo'+response.username;
+      console.log("response: ",response.username);
+      console.log("localStorage: ",localStorage.getItem("username"))
+      profilephoto.onload = function(){
+        profilephoto.onclick=toggleprofilephoto;
+        $('#userprofilephoto').append(profilephoto);
+      };
+
       profilephoto.src = 'data:image/png;base64,'+response.img;
       $('#profile_user').html(response.username);
       if(response.posts!=null){
-        $('#profile_posts_content').empty();
         response.posts.forEach(function(elem){
-          let newcard = '<div class="card" style="max-width: 400px;">';
-          newcard+='<div class="card-body">';
-          newcard+='<p class="card-text">'+elem.msg+'</div>';
-          newcard+='<img class="img-max-width" src="data:image/png;base64,'+elem.img+'"/>';
-          newcard+='</div>';
-          newcard+='<div class="card-footer text-muted mb-4" style="max-width: 400px;">';
-          newcard+=elem.timestamp;
-          newcard+='</div>';
-          newcard+='</div>';
+          let dateFormatted = formatdate(new Date(elem.timestamp));
+          let newcard = '<div class="shadow card mx-auto cardstyle">'
+                +'<div class="card-body">'
+                  +'<div class="card-header row nopadding nomargin">'
+                    +'<div class="col-xs align-top text-left">'
+                      +"<p class='msgstyle'><span><i class='material-icons md-18'>arrow_forward_ios</i></span>"+elem.msg+"</p>"
+                    +'</div>'
+                  +'</div>'
+                +'</hr>'
+                +'<div class="list-group list-group-flush row">'
+                  +'<div class="list-group-item col nopadding">'
+                    +'<img class="img-max-width" src="data:image/png;base64,'+elem.img+'"/>'
+                  +'</div>'
+                +'</div>'
+                +'<div class="list-group list-group-flush row">'
+                  +'<div class="list-group-item col">'
+                    +'<p class="timestampstyle">'+dateFormatted+'</p>'
+                  +'</div>'
+                +'</div>'
+              +'</div>'
+            +'</div>';
           $('#profile_posts_content').append(newcard);
         });
       }
     },
     error: (error) => {
-      errormanager(error);
+      errormanager(error,"follow");
     }
   });
 }
@@ -291,7 +392,7 @@ function actionfollow(e){
       alert('Now you are following this user!');
     },
     error: (error) =>{
-      errormanager(error);
+      errormanager(error,"follow");
     }
   });
 }
@@ -309,7 +410,7 @@ function actionunfollow(e){
       alert('You are not following that user anymore');
     },
     error: (error) =>{
-      errormanager(error);
+      errormanager(error,"unfollow");
     }
   });
 }
@@ -325,7 +426,6 @@ function logout(){
     success: (response) => {
       localStorage.removeItem("session_id");
       localStorage.removeItem("username");
-      alert('Logout completed with success');
       togglelogin();
     },
     error: (error) => {
@@ -335,7 +435,7 @@ function logout(){
 }
 function followed(){
   var data = new FormData();
-  data.append('session_id',session_id);
+  data.append('session_id',localStorage.getItem("session_id"));
   $.ajax({
     url: base_url+'followed',
     method: 'post',
@@ -352,7 +452,7 @@ function followed(){
       dashboard();
     },
     error: (error) => {
-      errormanager(error);
+      errormanager(error, "followed");
     }
   });
 }

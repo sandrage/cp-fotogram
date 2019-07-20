@@ -1,4 +1,4 @@
-#Wed Jul 17 19:50:05 CEST 2019
+#Fri Jul 19 23:06:13 CEST 2019
 base.0=/Users/sandragergawi/Documents/Università/LezioniMagistrale/Mobile Computing/fotogram/platforms/android/app/build/intermediates/transforms/dexMerger/debug/171
 path.0=classes.dex
 renamed.0=classes.dex

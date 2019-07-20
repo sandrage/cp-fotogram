@@ -15,7 +15,7 @@
 body { padding-top: 80px; }
 
 .img-max-width{
-  max-width: 400px;
+  max-width: 300px;
   margin-top: 20px;
 }
 
@@ -29,9 +29,15 @@ body { padding-top: 80px; }
 a{
   color: #8e24aa;
 }
-h1{
+h1, .navbar-brand{
   font-family: "Roboto", sans-serif;
   font-weight: 900;
+}
+.postsstyle{
+  margin-top:20px;
+  font-family: "Montserrat", sans-serif;
+  font-style:bold;
+  font-weight:200;
 }
 .usernamestyle{
   font-family: "Montserrat", sans-serif;
@@ -42,6 +48,25 @@ h1{
   font-family: "Montserrat", sans-serif;
   font-size:12px;
 }
+.timestampstyle{
+  font-family: "Montserrat", sans-serif;
+  color:grey;
+  font-size:10px;
+}
+.cardstyle{
+  margin-top:0;
+  margin-right:0;
+  margin-left:0;
+  padding: 0 0 0 0;
+  margin-bottom:20px;
+}
 .btn-outline-primary, .btn-outline-primary:hover, .btn-outline-primary:active, .btn-outline-primary:focus{
   border-color: #8e24aa;
+}
+.nopadding{
+  padding: 0 0 0 0;
+}
+
+.nomargin{
+  margin: 0 0 0 0;
 }
