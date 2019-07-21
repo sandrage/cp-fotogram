@@ -126,8 +126,8 @@ function dashboard(e){
       let posts = response.posts;
       posts.forEach(function(elem){
         let dateFormatted = formatdate(new Date(elem.timestamp));
-        var profileimg = elem.img != null ? 'data:image/png;base64,'+elem.img : '../img/account_48dp.png';
-        let newcard = '<div class="shadow card mx-auto cardstyle" onclick="toggleprofile(\''+elem.user+'\')">'
+        var postimg = elem.img != null ? 'data:image/png;base64,'+elem.img : 'res/screen/android/account_48dp.png';
+        let newcard = '<div class="shadow card cardstyle flex-column-reverse flex-md-column col-md-3 col-sm-4 col-12 mx-2 my-2 my-2 mx-1" onclick="toggleprofile(\''+elem.user+'\')">'
               +'<div class="card-body">'
                 +'<div class="card-header row nopadding nomargin">'
                   +'<div class="col-xs-4 text-left">'
@@ -145,7 +145,7 @@ function dashboard(e){
               +'</hr>'
               +'<div class="list-group list-group-flush row">'
                 +'<div class="list-group-item col nopadding">'
-                  +'<img class="img-max-width" src="'+profileimg+'"/>'
+                  +'<img class="card-img-bottom" src="'+postimg+'"/>'
                 +'</div>'
               +'</div>'
               +'<div class="list-group list-group-flush row">'
@@ -284,7 +284,7 @@ function getlistusers(e){
       var list = $('#list-users');
       list.empty();
       users.forEach(function(elem){
-        var profileimg = elem.picture != null ? 'data:image/png;base64,'+elem.picture : '../img/account_48dp.png';
+        var profileimg = elem.picture != null ? 'data:image/png;base64,'+elem.picture : 'res/screen/android/account_48dp.png';
         list.append('<li class="list-group-item" onclick="toggleprofile(\''+elem.name+'\')"><img style="margin-right:20px" class="rounded-circle" width="50" height="50" src="'+profileimg+'"/>'+elem.name+'</li>');
       });
     },
@@ -347,7 +347,7 @@ function profile(e){
         profilephoto.onclick=toggleprofilephoto;
         $('#userprofilephoto').append(profilephoto);
       };
-      var profileimg = response.img != null ? 'data:image/png;base64,'+response.img : '../img/account_48dp.png';
+      var profileimg = response.img != null ? 'data:image/png;base64,'+response.img : 'res/screen/android/account_48dp.png';
       profilephoto.src = profileimg;
       $('#profile_user').html(response.username);
       if(response.posts!=null){

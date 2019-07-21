@@ -20,7 +20,7 @@
 body { padding-top: 80px; }
 
 .img-max-width{
-  max-width: 300px;
+  max-width: 350px;
   margin-top: 20px;
   margin-bottom: 20px;
 }
@@ -34,6 +34,7 @@ body { padding-top: 80px; }
 
 .btn-outline-primary, .btn-outline-primary:hover, .btn-outline-primary:active, .btn-outline-primary:focus{
   border-color: #790e8b;
+  background-color: white;
   padding-left:20px;
   padding-right:20px;
   color: #790e8b;
@@ -95,7 +96,8 @@ h1{
   font-size:12px;
 }
 .msgwrap{
-  max-width:230px;
+  min-width:150px;
+  max-width: 230px;
   flex-wrap:inherit;
   word-break:break-word;
 }
@@ -110,6 +112,7 @@ h1{
   margin-left:0;
   padding: 0 0 0 0;
   margin-bottom:20px;
+  min-width:200px;
 }
 .btn-outline-primary, .btn-outline-primary:hover, .btn-outline-primary:active, .btn-outline-primary:focus{
   border-color: #8e24aa;
