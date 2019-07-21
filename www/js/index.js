@@ -11,19 +11,19 @@ $(document).ready(function(){
   session_id = localStorage.getItem("session_id");
   username_logged = localStorage.getItem("username");
   if(session_id!=null && username_logged!=null){
-    $('#app-content').show(togglehome);
+    $('#app-content').show(togglehomewithfollowed);
   } else{
     $('#loginpage').show();
   }
-  $('#login-form').submit(login);
-  $('#menu-home').click(togglehome);
-  $('#menu-profile').click(function(){toggleprofile(username_logged)});
-  $('#menu-addpost').click(toggleaddpost);
-  $('#menu-search').click(togglesearch);
-  $('#logout').click(logout);
+  $('#login-form').unbind('submit').submit(login);
+  $('#menu-home').unbind('click').click(togglehome);
+  $('#menu-profile').unbind('click').click(function(){toggleprofile(username_logged)});
+  $('#menu-addpost').unbind('click').click(toggleaddpost);
+  $('#menu-search').unbind('click').click(togglesearch);
+  $('#logout').unbind('click').click(logout);
 });
 function formatdate(date){
-  return date.getDate()+"-"+date.getMonth()+"-"+date.getYear()+" "+date.getHours()+":"+date.getMinutes()+":"+date.getSeconds();
+  return date.getDate()+"-"+date.getMonth()+"-"+date.getFullYear()+" "+date.getHours()+":"+date.getMinutes()+":"+date.getSeconds();
 }
 function errormanager(error, msg){
   if(error.status==401){
@@ -42,8 +42,15 @@ function togglelogin(e){
   $('#app-content').hide();
   $('#loginpage').show();
 }
-function togglehome(e){
+function togglehomewithfollowed(e){
   $('#dashboardpage').show(followed);
+  $('#postcreationpage').hide();
+  $('#profilepage').hide();
+  $('#searchpage').hide();
+  $('#changeprofilephotopage').hide();
+}
+function togglehome(e){
+  $('#dashboardpage').show(dashboard);
   $('#postcreationpage').hide();
   $('#profilepage').hide();
   $('#searchpage').hide();
@@ -97,7 +104,7 @@ function login(e){
       username_logged = username;
       localStorage.setItem("username",username_logged);
       $('#loginpage').hide();
-      $('#app-content').show(togglehome);
+      $('#app-content').show(togglehomewithfollowed);
     },
     error: (error)=>{
       errormanager(error,"login");
@@ -119,6 +126,7 @@ function dashboard(e){
       let posts = response.posts;
       posts.forEach(function(elem){
         let dateFormatted = formatdate(new Date(elem.timestamp));
+        var profileimg = elem.img != null ? 'data:image/png;base64,'+elem.img : '../img/account_48dp.png';
         let newcard = '<div class="shadow card mx-auto cardstyle" onclick="toggleprofile(\''+elem.user+'\')">'
               +'<div class="card-body">'
                 +'<div class="card-header row nopadding nomargin">'
@@ -129,19 +137,19 @@ function dashboard(e){
                     +'<div class="row">'
                       +'<div class="col usernamestyle">'+elem.user+"</div>"
                     +'</div>'
-                    +'<div class="row nomargin">'
-                    +"<span><i class='material-icons md-18'>arrow_forward_ios</i></span> <p class='msgstyle'>"+elem.msg+"</p>"
+                    +'<div class="row nomargin msgwrap">'
+                    +"<i class='material-icons md-18'>arrow_forward_ios</i><p class='msgstyle'>"+elem.msg+"</p>"
                     +'</div>'
                   +'</div>'
                 +'</div>'
               +'</hr>'
               +'<div class="list-group list-group-flush row">'
                 +'<div class="list-group-item col nopadding">'
-                  +'<img class="img-max-width" src="data:image/png;base64,'+elem.img+'"/>'
+                  +'<img class="img-max-width" src="'+profileimg+'"/>'
                 +'</div>'
               +'</div>'
               +'<div class="list-group list-group-flush row">'
-                +'<div class="list-group-item col">'
+                +'<div class="list-group-item col nopadding">'
                   +'<p class="timestampstyle">'+dateFormatted+'</p>'
                 +'</div>'
               +'</div>'
@@ -160,8 +168,9 @@ function onFail(message){
 }
 function postcreation(e){
   $('#imgpreview').empty();
-  $('#addpost').submit(addpostsubmit);
-  $('#postimg').click(function(){
+  $('#addpost').unbind('submit').submit(addpostsubmit);
+  $('#postimg').unbind('click').click(function(){
+    $('#imgpreview').empty();
     navigator.camera.getPicture(resizePhoto, onFail, {quality: 10, encodingType : Camera.EncodingType.JPEG, destinationType: Camera.DestinationType.DATA_URL, sourceType: Camera.PictureSourceType.PHOTOLIBRARY, correctOrientation : true});
   });
 }
@@ -170,7 +179,7 @@ function resizePhoto(imageData){
   var canvas = document.createElement("canvas");
   img.onload = function(){
     var MAX_WIDTH = 400;
-    var MAX_HEIGHT = 300;
+    var MAX_HEIGHT = 400;
     var width = img.width;
     var height = img.height;
     if (width > height) {
@@ -188,7 +197,7 @@ function resizePhoto(imageData){
     canvas.height = height;
     var ctx = canvas.getContext('2d');
     ctx.drawImage(img, 0, 0, width, height);
-    var dataurl = canvas.toDataURL(postimg.type,0.5);
+    var dataurl = canvas.toDataURL("image/jpeg");
     var imgresized = document.createElement("img");
     imgresized.id = 'imgresized';
     imgresized.onload = function(){
@@ -197,13 +206,12 @@ function resizePhoto(imageData){
     imgresized.src = dataurl;
   };
   img.src = "data:image/jpeg;base64," + imageData;
-  console.log("imageData: ",imageData);
 }
 function resizeProfilePhoto(imageData){
   var img = document.createElement("img");
   var canvas = document.createElement("canvas");
   img.onload = function(){
-    var MAX_WIDTH = 100;
+    var MAX_WIDTH = 200;
     var MAX_HEIGHT = 200;
     var width = img.width;
     var height = img.height;
@@ -222,7 +230,7 @@ function resizeProfilePhoto(imageData){
     canvas.height = height;
     var ctx = canvas.getContext('2d');
     ctx.drawImage(img, 0, 0, width, height);
-    var dataurl = canvas.toDataURL(postimg.type);
+    var dataurl = canvas.toDataURL("image/jpeg",0.7);
     var imgresized = document.createElement("img");
     imgresized.id = 'imgresized';
     imgresized.onload = function(){
@@ -236,9 +244,7 @@ function addpostsubmit(e){
   e.preventDefault();
   e.stopPropagation();
   const postmsg = $('#addpost input[name="postmsg"]').val();
-  console.log("postmsg: ",postmsg);
   const postimg = $('#imgresized')[0].src.replace(/^data:image.+;base64,/, '');
-  console.log("img to be sent: ",postimg);
   var data = new FormData();
   data.append("session_id",session_id);
   data.append("img",postimg);
@@ -253,13 +259,12 @@ function addpostsubmit(e){
       togglehome();
     },
     error: (error) =>{
-      //$('#addpost').prepend('<div class="alert alert-danger" role="alert">Something went wrong while uploading the post :(</div>');
       errormanager(error,"addpost");
     }
   });
 }
 function searchusers(e){
-  $('#searchfield').on('input',getlistusers);
+  $('#searchfield').unbind('input').on('input',getlistusers);
 }
 function getlistusers(e){
   var initial=$('#searchfield').val();
@@ -277,8 +282,10 @@ function getlistusers(e){
     success: (response) => {
       var users = response.users;
       var list = $('#list-users');
+      list.empty();
       users.forEach(function(elem){
-        list.append('<li class="list-group-item" onclick="toggleprofile(\''+elem.name+'\')"><img style="margin-right:20px" class="rounded-circle" width="50" height="50" src="data:image/png;base64,'+elem.picture+'"/>'+elem.name+'</li>');
+        var profileimg = elem.picture != null ? 'data:image/png;base64,'+elem.picture : '../img/account_48dp.png';
+        list.append('<li class="list-group-item" onclick="toggleprofile(\''+elem.name+'\')"><img style="margin-right:20px" class="rounded-circle" width="50" height="50" src="'+profileimg+'"/>'+elem.name+'</li>');
       });
     },
     error: (error) => {
@@ -288,15 +295,16 @@ function getlistusers(e){
 }
 function updatephoto(){
   $('#profileimgpreview').empty();
-  $('#changephoto').submit(changephotosubmit);
-  $('#profileimg').click(function(){
-    navigator.camera.getPicture(resizeProfilePhoto, onFail, {quality: 25, destinationType: Camera.DestinationType.DATA_URL, sourceType: Camera.PictureSourceType.PHOTOLIBRARY});
+  $('#changephoto').unbind('submit').submit(changephotosubmit);
+  $('#profileimg').unbind('click').click(function(){
+    $('#profileimgpreview').empty();
+    navigator.camera.getPicture(resizeProfilePhoto, onFail, {quality: 10, encodingType : Camera.EncodingType.JPEG, destinationType: Camera.DestinationType.DATA_URL, sourceType: Camera.PictureSourceType.PHOTOLIBRARY, correctOrientation : true});
   })
 }
-function changephotosubmit(){
+function changephotosubmit(e){
   e.preventDefault();
   e.stopPropagation();
-  const profileimage = $('#profileimgpreview')[0].src.replace(/^data:image.+;base64,/, '');
+  const profileimage = $('#imgresized')[0].src.replace(/^data:image.+;base64,/, '');
   var data = new FormData();
   data.append("session_id",session_id);
   data.append("picture",profileimage);
@@ -317,10 +325,8 @@ function changephotosubmit(){
 function profile(e){
   $('#profile_posts_content').empty();
   $('#userprofilephoto').empty();
-  $('#go_follow').unbind('click');
-  $('#go_unfollow').unbind('click');
-  $('#go_follow').click(function(){actionfollow(e)});
-  $('#go_unfollow').click(function(){actionunfollow(e)});
+  $('#go_follow').unbind('click').click(function(){actionfollow(e)});
+  $('#go_unfollow').unbind('click').click(function(){actionunfollow(e)});
   var data = new FormData();
   data.append('session_id',session_id);
   data.append('username',e);
@@ -337,14 +343,12 @@ function profile(e){
       profilephoto.width = 100;
       profilephoto.height = 100;
       profilephoto.id = 'photo'+response.username;
-      console.log("response: ",response.username);
-      console.log("localStorage: ",localStorage.getItem("username"))
       profilephoto.onload = function(){
         profilephoto.onclick=toggleprofilephoto;
         $('#userprofilephoto').append(profilephoto);
       };
-
-      profilephoto.src = 'data:image/png;base64,'+response.img;
+      var profileimg = response.img != null ? 'data:image/png;base64,'+response.img : '../img/account_48dp.png';
+      profilephoto.src = profileimg;
       $('#profile_user').html(response.username);
       if(response.posts!=null){
         response.posts.forEach(function(elem){
@@ -352,8 +356,11 @@ function profile(e){
           let newcard = '<div class="shadow card mx-auto cardstyle">'
                 +'<div class="card-body">'
                   +'<div class="card-header row nopadding nomargin">'
-                    +'<div class="col-xs align-top text-left">'
-                      +"<p class='msgstyle'><span><i class='material-icons md-18'>arrow_forward_ios</i></span>"+elem.msg+"</p>"
+                    +'<div class="col nomargin align-top">'
+                      +"<div class='row nomargin'>"
+                        +"<div class='col-xs'><i class='material-icons md-18'>arrow_forward_ios</i></div>"
+                        +"<div class='col-xs text-left msgwrap'><p class='msgstyle'>"+elem.msg+"</p></div>"
+                      +"</div>"
                     +'</div>'
                   +'</div>'
                 +'</hr>'
@@ -363,7 +370,7 @@ function profile(e){
                   +'</div>'
                 +'</div>'
                 +'<div class="list-group list-group-flush row">'
-                  +'<div class="list-group-item col">'
+                  +'<div class="list-group-item col nopadding">'
                     +'<p class="timestampstyle">'+dateFormatted+'</p>'
                   +'</div>'
                 +'</div>'

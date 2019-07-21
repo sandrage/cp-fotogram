@@ -6,7 +6,7 @@
     <meta name="format-detection" content="telephone=no" />
     <meta name="msapplication-tap-highlight" content="no" />
     <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width" />
-    <link href="https://fonts.googleapis.com/css?family=Roboto:900i|Montserrat&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:900|Montserrat:400,700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="css/index.css"/>
@@ -24,17 +24,17 @@
           </div>
           <div class="row">
             <div class="col form-group">
-              <input type="text" placeholder="Username" name="username" class="form-control"/>
+              <input type="text" placeholder="Username" name="username" class="form-control myforminput"/>
             </div>
           </div>
           <div class="row">
             <div class="col form-group">
-              <input type="password" placeholder="Password" name="password" class="form-control"/>
+              <input type="password" placeholder="Password" name="password" class="form-control myforminput"/>
             </div>
           </div>
           <div class="row">
             <div class="col form-group d-flex justify-content-center">
-              <button type="submit" class="btn btn-primary mb-2">Login</button>
+              <button type="submit" class="btn btn-primary mb-2 shadow-sm">Login</button>
             </div>
           </div>
           <div class="row">
@@ -50,7 +50,7 @@
           <p class="navbar-brand">fotogram</p>
           <div class="dropdown float-right">
             <button class="btn" type="button" id="dropdownMenuButton" data-toggle="dropdown" style="padding:0px 0px 0px 0px" aria-haspopup="true" aria-expanded="false">
-              <i class="material-icons">menu</i>
+              <i class="material-icons md-light">menu</i>
             </button>
             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
               <a class="dropdown-item" id="logout" href="#">Logout</a>
@@ -71,12 +71,12 @@
               <form class="col" id="addpost">
                     <div class="row">
                       <div class="col form-group">
-                        <input name="postmsg" type="text" class="form-control" placeholder="Post comment"/>
+                        <input name="postmsg" type="text" class="form-control myforminput" placeholder="Post comment"/>
                       </div>
                     </div>
                     <div class="row">
-                      <div class="col form-group">
-                      <button name="postimg" id="postimg" class="btn btn-primary mb-2">Search photo</button>
+                      <div class="col form-group text-center">
+                      <button name="postimg" id="postimg" class="btn btn-outline-primary mb-2">Search photo</button>
                       </div>
                     </div>
                     <div class="row">
@@ -98,21 +98,21 @@
                 <div class="col-8" id="profile_infofollowunfollow">
                   <div class="row">
                     <div class="col text-center">
-                      <h2 class="postsstyle" id="profile_user"></h2>
+                      <h2 class="usernameprofilestyle" id="profile_user"></h2>
                     </div>
                   </div>
-                  <div class="row mt-2 mb-2" id="profile_followunfollow">
-                    <div class="col-6 text-right" id="profile_follow">
-                      <button type="button" class="btn btn-primary" id="go_follow">Follow</button>
+                  <div class="row mt-2 mb-2 justify-content-center nomargin" id="profile_followunfollow">
+                    <div class="col-sx-6" id="profile_follow" style="margin-right:5px;">
+                      <button type="button" class="btn btn-primary shadow-sm" id="go_follow">Follow</button>
                     </div>
-                    <div class="col-6 text-left" id="profile_unfollow">
-                      <button type="button" class="btn btn-primary" id="go_unfollow">Unfollow</button>
+                    <div class="col-sx-6" id="profile_unfollow">
+                      <button type="button" class="btn btn-primary shadow-sm" id="go_unfollow">Unfollow</button>
                     </div>
                   </div>
                 </div>
               </div>
               <div class="row text-center" id="profile_posts_title">
-                <h4 class="postsstyle">POSTS</h4>
+                <h4 class="postsstyle" style="margin-left: 5px;">POSTS</h4>
               </div>
               <div class="row" id="profile_posts">
                 <div class="col" id="profile_posts_content" align="center"></div>
@@ -121,17 +121,17 @@
           </div>
           <div id="searchpage" class="row hidden">
             <div class="col" id="searchpage-content">
-              <h2>Search friends</h2>
-              <input type="text" name="search_username" placeholder="Search user..." id="searchfield" class="form-control"/>
-              <ul id="list-users" class="list-group mt-2 limit-list"></ul>
+              <h4>search friends</h4>
+              <input type="text" name="search_username" placeholder="Search user..." id="searchfield" class="form-control myforminput"/>
+              <ul id="list-users" class="list-group mt-2 limit-list" style="padding-bottom:50px"></ul>
             </div>
           </div>
           <div id="changeprofilephotopage" class="hidden container">
-            <div class="row" id="changeprofilephoto-content" style="min-height: 68vh;">
+            <div class="d-flex justify-content-center align-items-center" id="changeprofilephoto-content" style="min-height: 68vh;">
                 <form class="col text-center" id="changephoto">
                       <div class="row">
                         <div class="col form-group">
-                        <button name="postimg" id="profileimg" class="btn btn-primary mb-2">Search photo</button>
+                        <button type="button" id="profileimg" class="btn btn-outline-primary mb-2 shadow-sm">Search photo</button>
                         </div>
                       </div>
                       <div class="row">
@@ -140,7 +140,7 @@
                       </div>
                       <div class="row">
                         <div class="col form-group text-center">
-                          <button type="submit" class="btn btn-primary mb-2">Update</button>
+                          <button type="submit" class="btn btn-primary mb-2 shadow-sm">Update</button>
                         </div>
                       </div>
                 </form>

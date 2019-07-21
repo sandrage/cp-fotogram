@@ -2,8 +2,13 @@
   display:none;
 }
 
-.material-icons.md-light { color: rgba(255, 255, 255, 1); }
-
+.material-icons.md-light {
+  color: rgba(255, 255, 255, 1);
+}
+.material-icons.md-light:active{
+  border-color: rgba(255, 255, 255, 1);
+  border-size:1px;
+}
 .navbar-default {
     background-color: #8e24aa;
     border-color: #790e8b;
@@ -17,6 +22,7 @@ body { padding-top: 80px; }
 .img-max-width{
   max-width: 300px;
   margin-top: 20px;
+  margin-bottom: 20px;
 }
 
 .btn-primary, .btn-primary:hover, .btn-primary:active, .btn-primary:focus{
@@ -26,12 +32,43 @@ body { padding-top: 80px; }
   padding-right:20px;
 }
 
-a{
+.btn-outline-primary, .btn-outline-primary:hover, .btn-outline-primary:active, .btn-outline-primary:focus{
+  border-color: #790e8b;
+  padding-left:20px;
+  padding-right:20px;
+  color: #790e8b;
+}
+
+.myforminput{
+  border-color: #790e8b;
+}
+.form-control::-webkit-input-placeholder { color: #790e8b; }  /* WebKit, Blink, Edge */
+.form-control:-moz-placeholder { color: #790e8b; }  /* Mozilla Firefox 4 to 18 */
+.form-control::-moz-placeholder { color: #790e8b; }  /* Mozilla Firefox 19+ */
+.form-control:-ms-input-placeholder { color: #790e8b; }  /* Internet Explorer 10-11 */
+.form-control::-ms-input-placeholder { color: #790e8b; }
+.form-control{
+  font-family: "Montserrat", sans-serif;
+}
+a, .list-group-item{
   color: #8e24aa;
+  font-family: "Montserrat", sans-serif;
+}
+
+h4, p{
+  font-family: "Montserrat", sans-serif;
 }
 h1, .navbar-brand{
-  font-family: "Roboto", sans-serif;
-  font-weight: 900;
+  font-family: "Montserrat", sans-serif;
+  font-weight: bold;
+}
+.btn{
+  font-family: "Montserrat", sans-serif;
+  text-transform: uppercase;
+  font-size:12px;
+}
+h1{
+  color: #790e8b;
 }
 .postsstyle{
   margin-top:20px;
@@ -41,12 +78,26 @@ h1, .navbar-brand{
 }
 .usernamestyle{
   font-family: "Montserrat", sans-serif;
-  font-size:16px;
-  font-style: bold;
+  font-size:14px;
+  text-transform: uppercase;
+  color: #9c27b0;
+  font-weight: bold;
+}
+.usernameprofilestyle{
+  font-family: "Montserrat", sans-serif;
+  font-size:20px;
+  font-weight: bold;
+  text-transform: uppercase;
+  color: #790e8b;
 }
 .msgstyle{
   font-family: "Montserrat", sans-serif;
   font-size:12px;
+}
+.msgwrap{
+  max-width:230px;
+  flex-wrap:inherit;
+  word-break:break-word;
 }
 .timestampstyle{
   font-family: "Montserrat", sans-serif;
