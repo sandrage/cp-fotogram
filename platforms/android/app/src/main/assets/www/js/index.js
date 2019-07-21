@@ -30,6 +30,7 @@ function errormanager(error, msg){
     localStorage.removeItem("session_id");
     localStorage.removeItem("username");
     alert('Invalid session id'+"("+msg+")");
+    togglelogin();
   } else{
     if(response_mapping[error.responseText]){
       alert(response_mapping[error.responseText]+"("+msg+")");
@@ -39,10 +40,12 @@ function errormanager(error, msg){
   }
 }
 function togglelogin(e){
+  cleanup();
   $('#app-content').hide();
   $('#loginpage').show();
 }
 function togglehomewithfollowed(e){
+  cleanup();
   $('#dashboardpage').show(followed);
   $('#postcreationpage').hide();
   $('#profilepage').hide();
@@ -50,6 +53,7 @@ function togglehomewithfollowed(e){
   $('#changeprofilephotopage').hide();
 }
 function togglehome(e){
+  cleanup();
   $('#dashboardpage').show(dashboard);
   $('#postcreationpage').hide();
   $('#profilepage').hide();
@@ -57,6 +61,7 @@ function togglehome(e){
   $('#changeprofilephotopage').hide();
 }
 function toggleprofile(e){
+  cleanup();
   $('#dashboardpage').hide();
   $('#postcreationpage').hide();
   $('#profilepage').show(function(){profile(e)});
@@ -64,6 +69,7 @@ function toggleprofile(e){
   $('#changeprofilephotopage').hide();
 }
 function toggleaddpost(e){
+  cleanup();
   $('#dashboardpage').hide();
   $('#postcreationpage').show(postcreation);
   $('#profilepage').hide();
@@ -71,6 +77,7 @@ function toggleaddpost(e){
   $('#changeprofilephotopage').hide();
 }
 function togglesearch(e){
+  cleanup();
   $('#dashboardpage').hide();
   $('#postcreationpage').hide();
   $('#profilepage').hide();
@@ -78,11 +85,20 @@ function togglesearch(e){
   $('#changeprofilephotopage').hide();
 }
 function toggleprofilephoto(){
+  cleanup();
   $('#changeprofilephotopage').show(updatephoto);
   $('#dashboardpage').hide();
   $('#postcreationpage').hide();
   $('#profilepage').hide();
   $('#searchpage').hide();
+}
+function cleanup(){
+  $('#dash-content').empty();
+  $('#imgpreview').empty();
+  $('#list-users').empty();
+  $('#profile_posts_content').empty();
+  $('#userprofilephoto').empty();
+  $('#profile_user').empty();
 }
 function login(e){
   e.preventDefault();
@@ -112,7 +128,7 @@ function login(e){
   });
 }
 function dashboard(e){
-  $('#dash-content').empty();
+  //$('#dash-content').empty();
   let data = new FormData();
   data.append("session_id",session_id);
   $.ajax({
@@ -145,7 +161,7 @@ function dashboard(e){
               +'</hr>'
               +'<div class="list-group list-group-flush row">'
                 +'<div class="list-group-item col nopadding">'
-                  +'<img class="card-img-bottom" src="'+elem.img+'"/>'
+                  +'<img class="card-img-bottom" src="data:image/png;base64,'+elem.img+'"/>'
                 +'</div>'
               +'</div>'
               +'<div class="list-group list-group-flush row">'
@@ -167,7 +183,7 @@ function onFail(message){
   alert('Unexpected error occured while in the image upload: '+message);
 }
 function postcreation(e){
-  $('#imgpreview').empty();
+  //$('#imgpreview').empty();
   $('#addpost').unbind('submit').submit(addpostsubmit);
   $('#postimg').unbind('click').click(function(){
     $('#imgpreview').empty();
@@ -294,7 +310,7 @@ function getlistusers(e){
   });
 }
 function updatephoto(){
-  $('#profileimgpreview').empty();
+  //$('#profileimgpreview').empty();
   $('#changephoto').unbind('submit').submit(changephotosubmit);
   $('#profileimg').unbind('click').click(function(){
     $('#profileimgpreview').empty();
@@ -323,8 +339,8 @@ function changephotosubmit(e){
   });
 }
 function profile(e){
-  $('#profile_posts_content').empty();
-  $('#userprofilephoto').empty();
+  //$('#profile_posts_content').empty();
+  //$('#userprofilephoto').empty();
   $('#go_follow').unbind('click').click(function(){actionfollow(e)});
   $('#go_unfollow').unbind('click').click(function(){actionunfollow(e)});
   var data = new FormData();
